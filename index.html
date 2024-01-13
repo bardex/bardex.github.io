@@ -8,26 +8,32 @@
         body, html {
             height: 100%;
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: serif;
             letter-spacing: .05rem;
+            background-color: #fffcfc;
         }
 
         .container {
-            min-height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
+            max-width: 760px;
+            margin-right: auto;
+            margin-left: auto;
         }
 
         .quiz-header {
             font-size: 2em;
             margin-bottom: 4rem;
-            margin-top: 1rem;
+            padding: 1rem;
             text-align: center;
+            background: #bc0000;
+            color:gold;
         }
 
         .question {
             margin-bottom: 1rem;
+            text-align: justify;
         }
 
         .question span {
@@ -37,10 +43,11 @@
         .options {
             list-style: none;
             padding: 0;
+            width: 100%;
         }
 
         .options li {
-            background-color: #f0f0f0;
+            background-color: #fff0f0;
             padding: 10px;
             margin-bottom: 0.3rem;
             cursor: pointer;
@@ -88,48 +95,12 @@
     <button class="next-button">Следующий вопрос</button>
 </div>
 
-<script>
-    const quizData = [
-        {
-            "question": "Сколько континентов на Земле?",
-            "options": [
-                "Два",
-                "Четыре",
-                "Пять",
-                "Шесть"
-            ],
-            "score": 1,
-            "right_answer": 3,
-            "description": "Обычно забывают или Австралию или Антарктиду, иногда и то и другое."
-        },
-        {
-            "question": "Сколько естественных спутников у Земли?",
-            "options": [
-                "Ниодного",
-                "Один",
-                "Два",
-                "Три"
-            ],
-            "score": 5,
-            "right_answer": 1,
-            "description": "У Земли один естественный спутник - Луна, а МКС и Солнце не считаются."
-        },
-        {
-            "question": "Как зовут преподавателя?",
-            "options": [
-                "Николай Иванович",
-                "Семен Семеныч",
-                "Андрей Петрович",
-                "Марина Алексеевна"
-            ],
-            "score": 10,
-            "right_answer": 2,
-            "description": "Шанс угадать 25%."
-        }
-    ];
+<script src="script.js"></script>
 
+<script>
     let currentQuestionIndex = 0;
     let score = 0;
+    let answerSelected = false;
 
     const questionElement = document.querySelector('.question');
     const optionsElement = document.querySelector('.options');
@@ -138,6 +109,7 @@
     const cntQuestions = quizData.length
 
     function showQuestion(questionIndex) {
+        answerSelected = false;
         const currentQuestion = quizData[questionIndex];
         questionElement.innerHTML = "<span>[" + (questionIndex + 1) + "/" + cntQuestions + "]</span> " + currentQuestion.question;
         optionsElement.innerHTML = '';
@@ -152,11 +124,16 @@
     }
 
     function selectAnswer(selectedOption, currentQuestion) {
-        const rightAnswer = currentQuestion.options[currentQuestion.right_answer];
+        if(answerSelected) {
+            return;
+        }
+        answerSelected = true;
+
+        const rightAnswer = currentQuestion.right_answer;
         const options = optionsElement.querySelectorAll('li');
         options.forEach((optionElement, index) => {
-            optionElement.classList.add(currentQuestion.options[index] === rightAnswer ? 'correct' : 'n');
-            optionElement.classList.add(selectedOption === currentQuestion.options[index] && selectedOption !== rightAnswer ? 'wrong' : 'n');
+            optionElement.classList.add(currentQuestion.options[index] === rightAnswer ? 'correct' : 'neutral');
+            optionElement.classList.add(selectedOption === currentQuestion.options[index] && selectedOption !== rightAnswer ? 'wrong' : 'neutral');
         });
         if (selectedOption === rightAnswer) {
             score += currentQuestion.score;
@@ -167,6 +144,7 @@
         if (currentQuestionIndex + 1 === quizData.length) {
             nextButton.innerHTML = "Показать результат"
         }
+        console.debug(score)
     }
 
     nextButton.addEventListener('click', () => {
