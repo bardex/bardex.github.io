@@ -1,0 +1,129 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: serif;
+    letter-spacing: .05rem;
+    background-color: #fffcfc;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 760px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.quiz-header {
+    font-size: 2em;
+    margin-bottom: 4rem;
+    padding: 1rem;
+    text-align: center;
+    background: #bc0000;
+    color:gold;
+}
+
+.question {
+    margin-bottom: 1rem;
+    text-align: justify;
+}
+
+.question span {
+    color:gray;
+}
+
+.options {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.options li {
+    background-color: #fff0f0;
+    padding: 10px;
+    margin-bottom: 0.3rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.options li.correct {
+    background-color: #4CAF50;
+}
+
+.options li.wrong {
+    background-color: #f44336;
+}
+
+.main {
+    text-align: justify;
+}
+
+.description {
+    margin-top: 20px;
+    display: none;
+    text-align: justify;
+}
+
+.next-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    display: none;
+    border: none;
+    background-color: #5f9ea0;
+    color: white;
+    border-radius: 5px;
+}
+
+.gauge {
+    width: 200px;
+    height: 100px;
+    display: none;
+}
+
+.gauge__body {
+    fill: none;
+    stroke: #b4b4b4;
+    stroke-width: 15;
+}
+
+.gauge__fill {
+    fill: none;
+    stroke-width: 15;
+    stroke: #4CAF50;
+    stroke-linecap: round;
+    transform-origin: center;
+    transition: stroke-dashoffset 1s;
+}
+
+.gauge__val {
+    font-family: sans-serif;
+    fill: #4CAF50;
+    font-weight: bold;
+}
+
+.fail .gauge__fill {
+    stroke: #f44336;
+}
+.fail .gauge__val {
+    fill: #f44336;
+}
+.warn .gauge__fill {
+    stroke: orange;
+}
+.warn .gauge__val {
+    fill: orange;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 20px;
+    }
+}

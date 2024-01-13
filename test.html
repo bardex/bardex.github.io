@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>НАМ ЕСТЬ ЧЕМ ГОРДИТЬСЯ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="quiz-header"><a href="/index.html">НАМ ЕСТЬ ЧЕМ ГОРДИТЬСЯ</a></div>
+<div class="container">
+    <svg class="gauge" viewBox="0 0 200 100">
+        <path class="gauge__body" d="M 10,100 a 90,90 0 0,1 180,0" />
+        <path class="gauge__fill"
+              stroke-dasharray="282.7433388230814"
+              stroke-dashoffset="282.7433388230814"
+              d="M 10,100 a 90,90 0 0,1 180,0" />
+        <text class="gauge__val" x="85" y="80"></text>
+    </svg>
+
+    <div class="question"></div>
+    <ul class="options"></ul>
+    <div class="description"></div>
+    <button class="next-button">Следующий вопрос</button>
+</div>
+
+
+<script src="script.js"></script>
+
+<script>
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answerSelected = false;
+
+    const questionElement = document.querySelector('.question');
+    const optionsElement = document.querySelector('.options');
+    const descriptionElement = document.querySelector('.description');
+    const nextButton = document.querySelector('.next-button');
+    const gauge = document.querySelector('.gauge');
+    const cntQuestions = quizData.length
+
+    function showQuestion(questionIndex) {
+        answerSelected = false;
+        const currentQuestion = quizData[questionIndex];
+        questionElement.innerHTML = "<span>[" + (questionIndex + 1) + "/" + cntQuestions + "]</span> " + currentQuestion.question;
+        optionsElement.innerHTML = '';
+        currentQuestion.options.forEach((option, index) => {
+            const optionElement = document.createElement('li');
+            optionElement.textContent = option;
+            optionElement.addEventListener('click', () => selectAnswer(option, currentQuestion));
+            optionsElement.appendChild(optionElement);
+        });
+        descriptionElement.style.display = 'none';
+        nextButton.style.display = 'none';
+    }
+
+    function selectAnswer(selectedOption, currentQuestion) {
+        if(answerSelected) {
+            return;
+        }
+        answerSelected = true;
+
+        const rightAnswer = currentQuestion.right_answer;
+        const options = optionsElement.querySelectorAll('li');
+        options.forEach((optionElement, index) => {
+            optionElement.classList.add(currentQuestion.options[index] === rightAnswer ? 'correct' : 'neutral');
+            optionElement.classList.add(selectedOption === currentQuestion.options[index] && selectedOption !== rightAnswer ? 'wrong' : 'neutral');
+        });
+        if (selectedOption === rightAnswer) {
+            score += currentQuestion.score;
+        }
+        descriptionElement.textContent = currentQuestion.description;
+        descriptionElement.style.display = 'block';
+        nextButton.style.display = 'block';
+        if (currentQuestionIndex + 1 === quizData.length) {
+            nextButton.innerHTML = "Показать результат"
+        }
+    }
+
+    function updateGaugeValue(value) {
+        const gaugeFill = document.querySelector('.gauge__fill');
+        const gaugeVal = document.querySelector('.gauge__val');
+        const length = gaugeFill.getTotalLength();
+        const to = length * (1 - value);
+        gaugeFill.style.strokeDashoffset = to;
+        gauge.classList.remove('fail', 'warn');
+        if (value <= 0.4) {
+            gauge.classList.add('fail');
+        } else if (value <= 0.8) {
+            gauge.classList.add('warn');
+        }
+        gaugeVal.textContent = Math.round(value * 100) + "%"
+    }
+
+    function final(score) {
+        let totalScore = quizData.reduce((accumulator, currentObj) => {
+            return accumulator + (currentObj.score || 0);
+        }, 0);
+        let prc = score / totalScore;
+        questionElement.style.display = 'none';
+        optionsElement.style.display = 'none';
+        nextButton.style.display = 'none';
+        gauge.style.display = 'block';
+        updateGaugeValue(prc);
+        descriptionElement.innerHTML = `Ваш результат ${score} из ${totalScore}`;
+    }
+
+    nextButton.addEventListener('click', () => {
+        if (currentQuestionIndex < quizData.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+        } else {
+            final(score)
+        }
+    });
+
+    showQuestion(currentQuestionIndex);
+
+    updateGaugeValue(0);
+</script>
+</body>
+</html>

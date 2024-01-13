@@ -3,161 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Викторина</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: serif;
-            letter-spacing: .05rem;
-            background-color: #fffcfc;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 760px;
-            margin-right: auto;
-            margin-left: auto;
-        }
-
-        .quiz-header {
-            font-size: 2em;
-            margin-bottom: 4rem;
-            padding: 1rem;
-            text-align: center;
-            background: #bc0000;
-            color:gold;
-        }
-
-        .question {
-            margin-bottom: 1rem;
-            text-align: justify;
-        }
-
-        .question span {
-            color:gray;
-        }
-
-        .options {
-            list-style: none;
-            padding: 0;
-            width: 100%;
-        }
-
-        .options li {
-            background-color: #fff0f0;
-            padding: 10px;
-            margin-bottom: 0.3rem;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .options li.correct {
-            background-color: #4CAF50;
-        }
-
-        .options li.wrong {
-            background-color: #f44336;
-        }
-
-        .description {
-            margin-top: 20px;
-            display: none;
-        }
-
-        .next-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
-            display: none;
-            border: none;
-            background-color: #5f9ea0;
-            color: white;
-            border-radius: 5px;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 20px;
-            }
-        }
-    </style>
+    <title>НАМ ЕСТЬ ЧЕМ ГОРДИТЬСЯ</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="quiz-header">Викторина</div>
+
+<div class="quiz-header">НАМ ЕСТЬ ЧЕМ ГОРДИТЬСЯ</div>
 <div class="container">
-    <div class="question"></div>
-    <ul class="options"></ul>
-    <div class="description"></div>
-    <button class="next-button">Следующий вопрос</button>
+    <div class="main">
+    Нам есть чем гордиться – это просветительский проект, призванный познакомить молодежь с выдающимися достижениями граждан Советского Союза в области науки, политики, экономики, культуры и спорта.
+    Проект проводится в форме тестирования. Пройти тестирование можно онлайн.
+    </div>
+
+    <a class="next-button" href="test.html" style="display: block">Пройти тест</a>
 </div>
 
-<script src="script.js"></script>
-
-<script>
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let answerSelected = false;
-
-    const questionElement = document.querySelector('.question');
-    const optionsElement = document.querySelector('.options');
-    const descriptionElement = document.querySelector('.description');
-    const nextButton = document.querySelector('.next-button');
-    const cntQuestions = quizData.length
-
-    function showQuestion(questionIndex) {
-        answerSelected = false;
-        const currentQuestion = quizData[questionIndex];
-        questionElement.innerHTML = "<span>[" + (questionIndex + 1) + "/" + cntQuestions + "]</span> " + currentQuestion.question;
-        optionsElement.innerHTML = '';
-        currentQuestion.options.forEach((option, index) => {
-            const optionElement = document.createElement('li');
-            optionElement.textContent = option;
-            optionElement.addEventListener('click', () => selectAnswer(option, currentQuestion));
-            optionsElement.appendChild(optionElement);
-        });
-        descriptionElement.style.display = 'none';
-        nextButton.style.display = 'none';
-    }
-
-    function selectAnswer(selectedOption, currentQuestion) {
-        if(answerSelected) {
-            return;
-        }
-        answerSelected = true;
-
-        const rightAnswer = currentQuestion.right_answer;
-        const options = optionsElement.querySelectorAll('li');
-        options.forEach((optionElement, index) => {
-            optionElement.classList.add(currentQuestion.options[index] === rightAnswer ? 'correct' : 'neutral');
-            optionElement.classList.add(selectedOption === currentQuestion.options[index] && selectedOption !== rightAnswer ? 'wrong' : 'neutral');
-        });
-        if (selectedOption === rightAnswer) {
-            score += currentQuestion.score;
-        }
-        descriptionElement.textContent = currentQuestion.description;
-        descriptionElement.style.display = 'block';
-        nextButton.style.display = 'block';
-        if (currentQuestionIndex + 1 === quizData.length) {
-            nextButton.innerHTML = "Показать результат"
-        }
-        console.debug(score)
-    }
-
-    nextButton.addEventListener('click', () => {
-        if (currentQuestionIndex < quizData.length - 1) {
-            currentQuestionIndex++;
-            showQuestion(currentQuestionIndex);
-        } else {
-            document.querySelector('.container').innerHTML = `<div>Ваш общий балл: ${score}</div>`;
-        }
-    });
-
-    // Инициализация первого вопроса
-    showQuestion(currentQuestionIndex);
-</script>
 </body>
 </html>
