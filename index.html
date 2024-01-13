@@ -2,9 +2,184 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Викторина</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            letter-spacing: .05rem;
+        }
+
+        .container {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .quiz-header {
+            font-size: 2em;
+            margin-bottom: 4rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 1rem;
+        }
+
+        .question span {
+            color:gray;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .options li {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 0.3rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .options li.correct {
+            background-color: #4CAF50;
+        }
+
+        .options li.wrong {
+            background-color: #f44336;
+        }
+
+        .description {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .next-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            display: none;
+            border: none;
+            background-color: #5f9ea0;
+            color: white;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>Викторина</h1>
+<div class="quiz-header">Викторина</div>
+<div class="container">
+    <div class="question"></div>
+    <ul class="options"></ul>
+    <div class="description"></div>
+    <button class="next-button">Следующий вопрос</button>
+</div>
+
+<script>
+    const quizData = [
+        {
+            "question": "Сколько континентов на Земле?",
+            "options": [
+                "Два",
+                "Четыре",
+                "Пять",
+                "Шесть"
+            ],
+            "score": 1,
+            "right_answer": 3,
+            "description": "Обычно забывают или Австралию или Антарктиду, иногда и то и другое."
+        },
+        {
+            "question": "Сколько естественных спутников у Земли?",
+            "options": [
+                "Ниодного",
+                "Один",
+                "Два",
+                "Три"
+            ],
+            "score": 5,
+            "right_answer": 1,
+            "description": "У Земли один естественный спутник - Луна, а МКС и Солнце не считаются."
+        },
+        {
+            "question": "Как зовут преподавателя?",
+            "options": [
+                "Николай Иванович",
+                "Семен Семеныч",
+                "Андрей Петрович",
+                "Марина Алексеевна"
+            ],
+            "score": 10,
+            "right_answer": 2,
+            "description": "Шанс угадать 25%."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionElement = document.querySelector('.question');
+    const optionsElement = document.querySelector('.options');
+    const descriptionElement = document.querySelector('.description');
+    const nextButton = document.querySelector('.next-button');
+    const cntQuestions = quizData.length
+
+    function showQuestion(questionIndex) {
+        const currentQuestion = quizData[questionIndex];
+        questionElement.innerHTML = "<span>[" + (questionIndex + 1) + "/" + cntQuestions + "]</span> " + currentQuestion.question;
+        optionsElement.innerHTML = '';
+        currentQuestion.options.forEach((option, index) => {
+            const optionElement = document.createElement('li');
+            optionElement.textContent = option;
+            optionElement.addEventListener('click', () => selectAnswer(option, currentQuestion));
+            optionsElement.appendChild(optionElement);
+        });
+        descriptionElement.style.display = 'none';
+        nextButton.style.display = 'none';
+    }
+
+    function selectAnswer(selectedOption, currentQuestion) {
+        const rightAnswer = currentQuestion.options[currentQuestion.right_answer];
+        const options = optionsElement.querySelectorAll('li');
+        options.forEach((optionElement, index) => {
+            optionElement.classList.add(currentQuestion.options[index] === rightAnswer ? 'correct' : 'n');
+            optionElement.classList.add(selectedOption === currentQuestion.options[index] && selectedOption !== rightAnswer ? 'wrong' : 'n');
+        });
+        if (selectedOption === rightAnswer) {
+            score += currentQuestion.score;
+        }
+        descriptionElement.textContent = currentQuestion.description;
+        descriptionElement.style.display = 'block';
+        nextButton.style.display = 'block';
+        if (currentQuestionIndex + 1 === quizData.length) {
+            nextButton.innerHTML = "Показать результат"
+        }
+    }
+
+    nextButton.addEventListener('click', () => {
+        if (currentQuestionIndex < quizData.length - 1) {
+            currentQuestionIndex++;
+            showQuestion(currentQuestionIndex);
+        } else {
+            document.querySelector('.container').innerHTML = `<div>Ваш общий балл: ${score}</div>`;
+        }
+    });
+
+    // Инициализация первого вопроса
+    showQuestion(currentQuestionIndex);
+</script>
 </body>
 </html>
