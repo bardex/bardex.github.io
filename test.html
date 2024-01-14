@@ -48,7 +48,7 @@
         currentQuestion.options.forEach((option, index) => {
             const optionElement = document.createElement('li');
             optionElement.textContent = option;
-            optionElement.addEventListener('click', () => selectAnswer(option, currentQuestion));
+            optionElement.addEventListener('click', () => selectAnswer(index, currentQuestion));
             optionsElement.appendChild(optionElement);
         });
         descriptionElement.style.display = 'none';
@@ -60,12 +60,11 @@
             return;
         }
         answerSelected = true;
-
         const rightAnswer = currentQuestion.right_answer;
         const options = optionsElement.querySelectorAll('li');
         options.forEach((optionElement, index) => {
-            optionElement.classList.add(currentQuestion.options[index] === rightAnswer ? 'correct' : 'neutral');
-            optionElement.classList.add(selectedOption === currentQuestion.options[index] && selectedOption !== rightAnswer ? 'wrong' : 'neutral');
+            optionElement.classList.add(index === rightAnswer ? 'correct' : 'neutral');
+            optionElement.classList.add(selectedOption === index && selectedOption !== rightAnswer ? 'wrong' : 'neutral');
         });
         if (selectedOption === rightAnswer) {
             score += currentQuestion.score;
@@ -76,6 +75,7 @@
         if (currentQuestionIndex + 1 === quizData.length) {
             nextButton.innerHTML = "Показать результат"
         }
+        console.debug(score);
     }
 
     function updateGaugeValue(value) {
